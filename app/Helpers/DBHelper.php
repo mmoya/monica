@@ -62,6 +62,12 @@ class DBHelper
 
     public static function getTable($name)
     {
-        return '`'.static::connection()->getTablePrefix().$name.'`';
+        $quote_char = static::getQuoteChar();
+        return $quote_char.static::connection()->getTablePrefix().$name.$quote_char;
+    }
+
+    public static function getQuoteChar()
+    {
+        return DB::connection()->getDriverName() == 'pgsql' ? '"' : '`';
     }
 }
