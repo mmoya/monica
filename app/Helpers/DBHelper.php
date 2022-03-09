@@ -51,12 +51,27 @@ class DBHelper
      */
     public static function getTables()
     {
+	$db_name = static::connection()->getDatabaseName();
+	$table_prefix = '%'.static::connection()->getTablePrefix().'%';
+
+        if (DB::connection()->getDriverName() == 'pgsql') {
+            return DB::select('SELECT table_name
+                    FROM information_schema.tables
+                    WHERE table_catalog = :table_catalog
+                    AND table_schema = :table_schema
+                    AND table_name LIKE :table_prefix', [
+                'table_catalog' => $db_name,
+                'table_schema' => 'public',
+                'table_prefix' => $table_prefix,
+            ]);
+	}
+
         return DB::select('SELECT table_name as `table_name`
                 FROM information_schema.tables
                 WHERE table_schema = :table_schema
                 AND table_name LIKE :table_prefix', [
-            'table_schema' => static::connection()->getDatabaseName(),
-            'table_prefix' => '%'.static::connection()->getTablePrefix().'%',
+            'table_schema' => $db_name,
+            'table_prefix' => $table_prefix,
         ]);
     }
 
