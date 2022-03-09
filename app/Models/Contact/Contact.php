@@ -125,6 +125,7 @@ class Contact extends Model
         'vcard',
         'avatar_gravatar_url',
         'avatar_source',
+        'default_avatar_color',
     ];
 
     /**

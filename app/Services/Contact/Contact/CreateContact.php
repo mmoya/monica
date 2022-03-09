@@ -128,6 +128,10 @@ class CreateContact extends BaseService
             $dataOnly['uuid'] = $uuid;
         }
 
+        if (empty(Arr::get($data, 'default_avatar_color'))) {
+            $dataOnly['default_avatar_color'] = '#ff0000';
+        }
+
         return Contact::create($dataOnly);
     }
 
