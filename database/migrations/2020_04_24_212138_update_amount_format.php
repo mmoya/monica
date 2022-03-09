@@ -82,8 +82,17 @@ class UpdateAmountFormat extends Migration
                 }
             });
 
+        # monicahq/monica#1309
+        if (DB::connection()->getDriverName() == 'pgsql') {
+            DB::statement('ALTER TABLE gifts ALTER value TYPE INT USING value::integer');
+            DB::statement('ALTER TABLE gifts ALTER value DROP DEFAULT');
+        } else {
+            Schema::table('gifts', function (Blueprint $table) {
+                $table->integer('value')->change()->nullable();
+            });
+        }
+
         Schema::table('gifts', function (Blueprint $table) {
-            $table->integer('value')->change()->nullable();
             $table->renameColumn('value', 'amount');
         });
     }
